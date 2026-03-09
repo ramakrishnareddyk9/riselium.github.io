@@ -1,1 +1,1515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riselium – Constructions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@300;400;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink: #ff6f91;
+            --peach: #ff7f50;
+            --violet: #8a2be2;
+            --gold: #ffd1a4;
+            --dark: #050d1a;
+            --darker: #020810;
+            --glass: rgba(255,255,255,0.04);
+            --glass-border: rgba(255,255,255,0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            background: var(--darker);
+            color: #fff;
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+        }
 
+        /* ===== HEADER ===== */
+        header {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            height: 72px;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            background: rgba(2,8,16,0.92);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .header-logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .logo-icon {
+            width: 38px; height: 38px;
+            background: linear-gradient(135deg, var(--pink), var(--violet));
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Bebas Neue', sans-serif; font-size: 18px;
+            animation: pulse-logo 3s ease-in-out infinite;
+        }
+        @keyframes pulse-logo {
+            0%,100% { box-shadow: 0 0 10px rgba(255,111,145,0.4); }
+            50% { box-shadow: 0 0 25px rgba(255,111,145,0.8), 0 0 50px rgba(138,43,226,0.4); }
+        }
+        .brand-name {
+            font-family: 'Bebas Neue', sans-serif; font-size: 1.9rem; letter-spacing: 4px;
+            background: linear-gradient(90deg, #ff6f91, #ffd1a4, #d1c4ff, #ff7f50, #8a2be2);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .brand-sub {
+            font-family: 'Rajdhani', sans-serif; font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 6px; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-top: -4px;
+        }
+        nav { display: flex; align-items: center; gap: 32px; }
+        nav a {
+            font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 0.9rem;
+            letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.6);
+            text-decoration: none; transition: color 0.3s; position: relative; cursor: pointer;
+        }
+        nav a::after {
+            content: ''; position: absolute; bottom: -2px; left: 0;
+            width: 0; height: 1px; background: var(--pink); transition: width 0.3s;
+        }
+        nav a:hover { color: #fff; }
+        nav a:hover::after, nav a.active::after { width: 100%; }
+        nav a.active { color: #fff; }
+        .header-actions { display: flex; align-items: center; gap: 12px; }
+        .btn-outline {
+            padding: 8px 22px; border: 1px solid rgba(255,111,145,0.5); border-radius: 4px;
+            color: var(--pink); font-family: 'Rajdhani', sans-serif; font-weight: 700;
+            font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase;
+            cursor: pointer; background: transparent; transition: all 0.3s;
+        }
+        .btn-outline:hover { background: rgba(255,111,145,0.1); border-color: var(--pink); box-shadow: 0 0 15px rgba(255,111,145,0.3); }
+        .btn-solid {
+            padding: 8px 22px; border: none; border-radius: 4px;
+            background: linear-gradient(135deg, var(--pink), var(--violet));
+            color: #fff; font-family: 'Rajdhani', sans-serif; font-weight: 700;
+            font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase;
+            cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden;
+        }
+        .btn-solid::before {
+            content: ''; position: absolute; top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.4s;
+        }
+        .btn-solid:hover::before { left: 100%; }
+        .btn-solid:hover { box-shadow: 0 0 20px rgba(255,111,145,0.5); transform: translateY(-1px); }
+
+        /* ===== PAGE SECTIONS (SPA) ===== */
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+
+        /* ===== AUTH MODALS ===== */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+            z-index: 5000; align-items: center; justify-content: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: linear-gradient(145deg, #0d1b2e, #080f1c);
+            border: 1px solid var(--glass-border); border-radius: 16px;
+            padding: 40px; width: 420px; max-width: 95vw; position: relative;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 40px rgba(255,111,145,0.1);
+        }
+        .modal-close {
+            position: absolute; top: 16px; right: 16px;
+            width: 32px; height: 32px; border-radius: 50%;
+            border: 1px solid var(--glass-border); background: var(--glass);
+            color: rgba(255,255,255,0.6); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; transition: all 0.3s;
+        }
+        .modal-close:hover { background: rgba(255,111,145,0.2); color: var(--pink); border-color: var(--pink); }
+        .modal-title {
+            font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 3px;
+            background: linear-gradient(90deg, var(--pink), var(--gold));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 6px;
+        }
+        .modal-subtitle { color: rgba(255,255,255,0.4); font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 28px; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 8px; }
+        .form-group input {
+            width: 100%; padding: 12px 16px;
+            background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+            border-radius: 8px; color: #fff; font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem; transition: border-color 0.3s, box-shadow 0.3s; outline: none;
+        }
+        .form-group input:focus { border-color: var(--pink); box-shadow: 0 0 12px rgba(255,111,145,0.2); }
+        .form-submit {
+            width: 100%; padding: 14px;
+            background: linear-gradient(135deg, var(--pink), var(--violet));
+            border: none; border-radius: 8px; color: #fff;
+            font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 3px;
+            cursor: pointer; margin-top: 8px; transition: all 0.3s;
+        }
+        .form-submit:hover { box-shadow: 0 0 25px rgba(255,111,145,0.5); transform: translateY(-2px); }
+        .modal-switch { text-align: center; margin-top: 20px; color: rgba(255,255,255,0.4); font-size: 0.9rem; }
+        .modal-switch a { color: var(--pink); cursor: pointer; text-decoration: underline; }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            position: relative; width: 100%; height: 100vh;
+            overflow: hidden; display: flex; align-items: center; justify-content: center;
+        }
+        .hero-3d-scene {
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 50% 60%, #0a1a35 0%, #020810 70%);
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+        }
+
+        /* ---- DIGITAL TWIN SVG CITY ---- */
+        #dt-canvas {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+        }
+
+        /* Grid floor */
+        .grid-floor {
+            position: absolute; bottom: 0; left: 0;
+            width: 100%; height: 55%;
+            background-image:
+                linear-gradient(rgba(255,111,145,0.07) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,111,145,0.07) 1px, transparent 1px);
+            background-size: 60px 60px;
+            transform: perspective(500px) rotateX(62deg);
+            transform-origin: bottom;
+        }
+
+        /* Building blocks */
+        .building-scene {
+            position: absolute; bottom: 14%; left: 50%;
+            transform: translateX(-50%);
+            display: flex; align-items: flex-end; gap: 10px;
+            transform-style: preserve-3d;
+        }
+        .building-block {
+            position: relative; width: 58px;
+            background: linear-gradient(180deg, rgba(255,111,145,0.5) 0%, rgba(138,43,226,0.35) 60%, rgba(2,8,16,0.8) 100%);
+            border: 1px solid rgba(255,111,145,0.25);
+            border-radius: 3px 3px 0 0;
+            animation: buildUp 3.5s cubic-bezier(0.22,0.61,0.36,1) forwards;
+            transform-origin: bottom;
+            box-shadow: 0 0 25px rgba(255,111,145,0.15), inset 0 0 30px rgba(255,255,255,0.02);
+        }
+        .building-block::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--pink), transparent);
+            box-shadow: 0 0 12px var(--pink); animation: roofGlow 2s ease-in-out infinite;
+        }
+        @keyframes roofGlow { 0%,100%{opacity:0.6;} 50%{opacity:1;} }
+        /* Window grid */
+        .building-block::after {
+            content: ''; position: absolute; inset: 6px;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 11px 14px;
+        }
+
+        /* random lit windows */
+        .win-lights {
+            position: absolute; inset: 0; overflow: hidden; border-radius: 3px 3px 0 0;
+        }
+        .win-light {
+            position: absolute; width: 7px; height: 9px;
+            background: rgba(255,230,100,0.7); border-radius: 1px;
+            animation: winBlink var(--dur,3s) var(--del,0s) ease-in-out infinite;
+        }
+        @keyframes winBlink { 0%,100%{opacity:0.8;} 50%{opacity:0.2;} }
+
+        .b1{height:160px;animation-delay:0s;}
+        .b2{height:290px;animation-delay:.25s;width:74px;background:linear-gradient(180deg,rgba(138,43,226,0.55),rgba(255,111,145,0.3),rgba(2,8,16,0.8));}
+        .b3{height:220px;animation-delay:.5s;}
+        .b4{height:380px;animation-delay:.75s;width:68px;background:linear-gradient(180deg,rgba(255,209,164,0.5),rgba(138,43,226,0.35),rgba(2,8,16,0.8));}
+        .b5{height:200px;animation-delay:1s;}
+        .b6{height:330px;animation-delay:1.25s;width:80px;}
+        .b7{height:170px;animation-delay:1.5s;}
+        .b8{height:260px;animation-delay:1.75s;width:66px;background:linear-gradient(180deg,rgba(100,180,255,0.5),rgba(138,43,226,0.3),rgba(2,8,16,0.8));}
+        .b9{height:140px;animation-delay:2s;}
+
+        @keyframes buildUp { 0%{transform:scaleY(0);opacity:0;} 60%{opacity:1;} 100%{transform:scaleY(1);opacity:1;} }
+
+        /* Crane */
+        .crane { position:absolute; right:20%; bottom:14%; opacity:0; animation: craneIn 1s 2.2s ease forwards; }
+        @keyframes craneIn { to{opacity:1;} }
+        .crane-tower { width:6px; height:180px; background:linear-gradient(180deg,#ffd1a4,#ff7f50); margin:0 auto; box-shadow:0 0 8px rgba(255,209,164,0.4); }
+        .crane-arm { position:absolute; top:10px; right:0; width:130px; height:6px; background:linear-gradient(90deg,#ffd1a4,#ff7f50); box-shadow:0 0 8px rgba(255,209,164,0.4); }
+        .crane-cable { position:absolute; top:6px; right:25px; width:1px; height:0; background:rgba(255,255,255,0.5); animation:cableGrow 1s 3s forwards, cableSwing 2.5s 4s ease-in-out infinite; transform-origin:top; }
+        @keyframes cableGrow { to{height:55px;} }
+        @keyframes cableSwing { 0%,100%{transform:rotate(-5deg);} 50%{transform:rotate(5deg);} }
+        .crane-load { position:absolute; bottom:-12px; left:-6px; width:12px; height:12px; background: var(--pink); border-radius:2px; box-shadow:0 0 8px var(--pink); }
+
+        /* Data overlays / HUD lines */
+        .hud-line {
+            position: absolute; background: transparent;
+            border: 1px dashed rgba(255,111,145,0.2);
+            border-radius: 4px; pointer-events: none;
+            animation: hudPulse 4s ease-in-out infinite;
+        }
+        @keyframes hudPulse { 0%,100%{border-color:rgba(255,111,145,0.15);} 50%{border-color:rgba(255,111,145,0.4);} }
+        .hud-dot {
+            position: absolute; width: 6px; height: 6px;
+            border-radius: 50%; background: var(--pink);
+            box-shadow: 0 0 10px var(--pink);
+            animation: dotPulse 2s ease-in-out infinite;
+        }
+        @keyframes dotPulse { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(1.6);opacity:0.4;} }
+        .hud-label {
+            position: absolute; font-family: 'Orbitron', sans-serif;
+            font-size: 0.55rem; color: rgba(255,111,145,0.7);
+            letter-spacing: 2px; text-transform: uppercase; white-space: nowrap;
+        }
+
+        /* scan lines */
+        .scan-line {
+            position: absolute; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,111,145,0.6) 40%, rgba(138,43,226,0.6) 60%, transparent 100%);
+            animation: scanDown 5s linear infinite; pointer-events: none;
+        }
+        @keyframes scanDown { 0%{top:0;opacity:0.8;} 100%{top:100%;opacity:0;} }
+
+        /* Particles */
+        .particle { position:absolute; border-radius:50%; animation:floatParticle linear infinite; opacity:0; }
+        @keyframes floatParticle { 0%{transform:translateY(100vh) scale(0);opacity:0;} 10%{opacity:1;} 90%{opacity:0.5;} 100%{transform:translateY(-20px) scale(1.5);opacity:0;} }
+
+        /* Hero content */
+        .hero-content { position:relative; z-index:10; text-align:center; padding:0 20px; }
+        .hero-tag {
+            display:inline-block; padding:5px 16px;
+            border:1px solid rgba(255,111,145,0.4); border-radius:100px;
+            font-size:0.75rem; letter-spacing:4px; text-transform:uppercase; color:var(--pink);
+            margin-bottom:24px; animation:fadeInDown 1s ease forwards; opacity:0;
+        }
+        .hero-title {
+            font-family:'Bebas Neue',sans-serif; font-size:clamp(3.5rem,9vw,7rem);
+            line-height:0.95; letter-spacing:4px; margin-bottom:20px;
+            animation:fadeInDown 1s .2s ease forwards; opacity:0;
+        }
+        .hero-title .line1 { background:linear-gradient(90deg,#fff,rgba(255,255,255,0.7)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .hero-title .line2 { background:linear-gradient(90deg,var(--pink),var(--gold),var(--violet)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .hero-desc { font-size:1.1rem; color:rgba(255,255,255,0.5); letter-spacing:2px; margin-bottom:36px; max-width:500px; margin-left:auto; margin-right:auto; animation:fadeInDown 1s .4s ease forwards; opacity:0; }
+        .hero-ctas { display:flex; gap:16px; justify-content:center; animation:fadeInDown 1s .6s ease forwards; opacity:0; }
+        .cta-primary {
+            padding:14px 36px; background:linear-gradient(135deg,var(--pink),var(--violet));
+            border:none; border-radius:6px; color:#fff; font-family:'Rajdhani',sans-serif;
+            font-weight:700; font-size:1rem; letter-spacing:3px; text-transform:uppercase;
+            cursor:pointer; position:relative; overflow:hidden; transition:all .3s;
+        }
+        .cta-primary::before { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent); transition:left .5s; }
+        .cta-primary:hover::before{left:100%;} .cta-primary:hover{box-shadow:0 0 30px rgba(255,111,145,0.5);transform:translateY(-2px);}
+        .cta-secondary { padding:14px 36px; background:transparent; border:1px solid rgba(255,255,255,0.2); border-radius:6px; color:rgba(255,255,255,0.7); font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1rem; letter-spacing:3px; text-transform:uppercase; cursor:pointer; transition:all .3s; }
+        .cta-secondary:hover { border-color:var(--pink); color:#fff; background:rgba(255,111,145,0.05); }
+
+        .stats-bar {
+            position:absolute; bottom:0; left:0; right:0;
+            background:rgba(2,8,16,0.8); backdrop-filter:blur(16px);
+            border-top:1px solid var(--glass-border);
+            display:flex; justify-content:center; gap:60px; padding:20px 40px;
+        }
+        .stat-item { text-align:center; }
+        .stat-num { font-family:'Bebas Neue',sans-serif; font-size:2rem; background:linear-gradient(90deg,var(--pink),var(--gold)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .stat-label { font-size:0.7rem; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.3); }
+
+        @keyframes fadeInDown { 0%{opacity:0;transform:translateY(-20px);} 100%{opacity:1;transform:translateY(0);} }
+
+        /* ===== SECTION WRAPPER ===== */
+        .inner-section {
+            min-height: 100vh;
+            padding-top: 72px;
+            background: linear-gradient(180deg, #020810, #050d1a);
+        }
+        .section-header {
+            padding: 60px 60px 10px;
+        }
+        .section-label { font-size:0.75rem; letter-spacing:5px; text-transform:uppercase; color:var(--pink); margin-bottom:10px; }
+        .section-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(2.5rem,5vw,4rem); letter-spacing:3px; margin-bottom:10px; background:linear-gradient(90deg,#fff,rgba(255,255,255,0.5)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .section-desc { color:rgba(255,255,255,0.45); font-size:1rem; letter-spacing:1px; max-width:600px; margin-bottom:50px; }
+
+        /* ===== PROJECTS SECTION ===== */
+        #projects-section { background: linear-gradient(180deg, #020810, #050d1a); }
+        .projects-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:28px; padding:0 60px 80px; }
+        .project-card {
+            background:linear-gradient(145deg,#0d1b2e,#060e1a);
+            border:1px solid rgba(255,255,255,0.07); border-radius:14px; overflow:hidden;
+            cursor:pointer; transition:all 0.35s; position:relative;
+        }
+        .project-card:hover { transform:translateY(-6px); border-color:rgba(255,111,145,0.3); box-shadow:0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(255,111,145,0.1); }
+        .project-card-img {
+            height: 200px; overflow: hidden; position: relative;
+            background: linear-gradient(135deg, #0a1520, #150820);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .project-card-img img { width:100%; height:100%; object-fit:cover; transition:transform 0.4s; }
+        .project-card:hover .project-card-img img { transform:scale(1.06); }
+        .project-card-img .placeholder-icon { font-size:4rem; opacity:0.3; }
+        .project-badge {
+            position:absolute; top:12px; left:12px;
+            padding:4px 12px; border-radius:100px; font-size:0.7rem; letter-spacing:2px;
+            text-transform:uppercase; font-weight:700;
+        }
+        .badge-res { background:rgba(255,111,145,0.2); color:var(--pink); border:1px solid rgba(255,111,145,0.3); }
+        .badge-com { background:rgba(255,127,80,0.2); color:var(--peach); border:1px solid rgba(255,127,80,0.3); }
+        .badge-ind { background:rgba(138,43,226,0.2); color:#b06aff; border:1px solid rgba(138,43,226,0.3); }
+        .badge-land { background:rgba(100,220,100,0.2); color:#6de06d; border:1px solid rgba(100,220,100,0.3); }
+        .project-card-body { padding:20px; }
+        .project-card-title { font-family:'Bebas Neue',sans-serif; font-size:1.5rem; letter-spacing:2px; margin-bottom:8px; }
+        .project-card-desc { color:rgba(255,255,255,0.45); font-size:0.9rem; line-height:1.6; margin-bottom:16px; }
+        .project-card-meta { display:flex; gap:16px; }
+        .project-meta-item { font-size:0.75rem; letter-spacing:1px; color:rgba(255,255,255,0.3); }
+        .project-meta-item span { color:rgba(255,255,255,0.6); }
+        .project-view-btn {
+            display:inline-flex; align-items:center; gap:8px; margin-top:16px;
+            padding:8px 20px; background:transparent; border:1px solid rgba(255,111,145,0.3);
+            border-radius:6px; color:var(--pink); font-family:'Rajdhani',sans-serif;
+            font-weight:700; font-size:0.85rem; letter-spacing:2px; text-transform:uppercase;
+            cursor:pointer; transition:all 0.3s;
+        }
+        .project-view-btn:hover { background:rgba(255,111,145,0.1); border-color:var(--pink); }
+
+        /* Project Detail Modal */
+        .project-modal-overlay {
+            display:none; position:fixed; inset:0;
+            background:rgba(0,0,0,0.85); backdrop-filter:blur(12px);
+            z-index:6000; align-items:center; justify-content:center; padding:20px;
+        }
+        .project-modal-overlay.active { display:flex; }
+        .project-modal {
+            background:linear-gradient(145deg,#0a1828,#050d1a);
+            border:1px solid rgba(255,111,145,0.15); border-radius:20px;
+            width:900px; max-width:98vw; max-height:90vh; overflow-y:auto;
+            position:relative; box-shadow:0 40px 100px rgba(0,0,0,0.7);
+        }
+        .project-modal::-webkit-scrollbar { width:4px; }
+        .project-modal::-webkit-scrollbar-thumb { background:rgba(255,111,145,0.3); border-radius:2px; }
+        .project-modal-close {
+            position:sticky; top:16px; float:right; margin:16px 16px 0 0;
+            width:36px; height:36px; border-radius:50%;
+            border:1px solid var(--glass-border); background:rgba(0,0,0,0.5);
+            color:rgba(255,255,255,0.6); cursor:pointer;
+            display:flex; align-items:center; justify-content:center;
+            font-size:1rem; transition:all 0.3s; z-index:10;
+        }
+        .project-modal-close:hover { background:rgba(255,111,145,0.2); color:var(--pink); border-color:var(--pink); }
+        .project-modal-hero {
+            height:300px; background:linear-gradient(135deg,#0a1520,#150820);
+            display:flex; align-items:center; justify-content:center;
+            border-radius:20px 20px 0 0; overflow:hidden; position:relative;
+        }
+        .project-modal-hero img { width:100%; height:100%; object-fit:cover; }
+        .project-modal-hero .no-img { font-size:6rem; opacity:0.2; }
+        .project-modal-body { padding:36px; }
+        .project-modal-tag { display:inline-block; padding:4px 14px; border-radius:100px; font-size:0.7rem; letter-spacing:2px; text-transform:uppercase; margin-bottom:14px; }
+        .project-modal-title { font-family:'Bebas Neue',sans-serif; font-size:2.8rem; letter-spacing:3px; margin-bottom:12px; line-height:1; }
+        .project-modal-desc { color:rgba(255,255,255,0.55); font-size:1rem; line-height:1.8; margin-bottom:28px; }
+        .project-modal-specs {
+            display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:28px;
+        }
+        .spec-card { background:rgba(255,255,255,0.03); border:1px solid var(--glass-border); border-radius:10px; padding:16px; }
+        .spec-card-label { font-size:0.7rem; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-bottom:6px; }
+        .spec-card-val { font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:2px; }
+
+        /* Image gallery */
+        .project-gallery { margin-bottom:28px; }
+        .project-gallery-title { font-family:'Bebas Neue',sans-serif; font-size:1.3rem; letter-spacing:2px; margin-bottom:14px; color:rgba(255,255,255,0.7); }
+        .gallery-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; }
+        .gallery-thumb {
+            height:120px; background:rgba(255,255,255,0.04);
+            border:1px solid var(--glass-border); border-radius:8px;
+            overflow:hidden; cursor:pointer; transition:all 0.3s;
+            display:flex; align-items:center; justify-content:center;
+        }
+        .gallery-thumb:hover { border-color:rgba(255,111,145,0.4); transform:scale(1.02); }
+        .gallery-thumb img { width:100%; height:100%; object-fit:cover; }
+        .gallery-thumb .thumb-placeholder { font-size:2rem; opacity:0.3; }
+
+        /* Upload area */
+        .upload-area {
+            border: 2px dashed rgba(255,111,145,0.25); border-radius:12px;
+            padding:30px; text-align:center; margin-bottom:24px;
+            background:rgba(255,111,145,0.03); transition:all 0.3s; cursor:pointer;
+        }
+        .upload-area:hover, .upload-area.drag-over { border-color:rgba(255,111,145,0.6); background:rgba(255,111,145,0.07); }
+        .upload-icon { font-size:2rem; margin-bottom:8px; }
+        .upload-title { font-family:'Bebas Neue',sans-serif; font-size:1.2rem; letter-spacing:2px; margin-bottom:4px; }
+        .upload-sub { color:rgba(255,255,255,0.35); font-size:0.8rem; letter-spacing:1px; }
+        .upload-btn {
+            display:inline-block; margin-top:12px; padding:8px 20px;
+            background:linear-gradient(135deg,var(--pink),var(--violet));
+            border:none; border-radius:6px; color:#fff;
+            font-family:'Rajdhani',sans-serif; font-weight:700; font-size:0.85rem;
+            letter-spacing:2px; cursor:pointer; transition:all 0.3s;
+        }
+        .upload-btn:hover { box-shadow:0 0 15px rgba(255,111,145,0.4); }
+
+        /* Text editor area */
+        .project-notes-area {
+            background:rgba(255,255,255,0.03); border:1px solid var(--glass-border);
+            border-radius:10px; padding:16px; min-height:120px;
+            color:rgba(255,255,255,0.7); font-family:'Rajdhani',sans-serif;
+            font-size:0.95rem; line-height:1.7; resize:vertical;
+            width:100%; outline:none; transition:border-color 0.3s;
+        }
+        .project-notes-area:focus { border-color:rgba(255,111,145,0.4); }
+        .save-notes-btn {
+            margin-top:10px; padding:8px 24px;
+            background:linear-gradient(135deg,var(--pink),var(--violet));
+            border:none; border-radius:6px; color:#fff;
+            font-family:'Rajdhani',sans-serif; font-weight:700; font-size:0.85rem;
+            letter-spacing:2px; cursor:pointer; transition:all 0.3s;
+        }
+        .save-notes-btn:hover { box-shadow:0 0 15px rgba(255,111,145,0.4); }
+        .save-success { color:#4ade80; font-size:0.8rem; margin-left:10px; opacity:0; transition:opacity 0.3s; }
+
+        /* ===== SERVICES SECTION ===== */
+        #services-section { background:linear-gradient(180deg,#020810,#050d1a); }
+        .services-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:24px; padding:0 60px 80px; }
+        .service-card {
+            background:linear-gradient(145deg,#0d1b2e,#060e1a);
+            border:1px solid rgba(255,255,255,0.07); border-radius:14px; padding:36px 28px;
+            transition:all 0.35s; position:relative; overflow:hidden;
+        }
+        .service-card::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,111,145,0.04),transparent); opacity:0; transition:opacity 0.3s; }
+        .service-card:hover::before { opacity:1; }
+        .service-card:hover { transform:translateY(-6px); border-color:rgba(255,111,145,0.25); box-shadow:0 20px 50px rgba(0,0,0,0.5); }
+        .service-icon { font-size:2.8rem; margin-bottom:16px; display:block; }
+        .service-title { font-family:'Bebas Neue',sans-serif; font-size:1.6rem; letter-spacing:2px; margin-bottom:10px; }
+        .service-desc { color:rgba(255,255,255,0.45); font-size:0.9rem; line-height:1.7; margin-bottom:20px; }
+        .service-features { list-style:none; }
+        .service-features li { color:rgba(255,255,255,0.5); font-size:0.85rem; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.05); display:flex; align-items:center; gap:8px; }
+        .service-features li::before { content:'▸'; color:var(--pink); flex-shrink:0; }
+        .service-price { margin-top:20px; font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:2px; background:linear-gradient(90deg,var(--pink),var(--gold)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+        /* ===== ABOUT SECTION ===== */
+        #about-section { background:linear-gradient(180deg,#020810,#050d1a); }
+        .about-inner { padding:40px 60px 80px; display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start; }
+        /* .about-left {} */
+        .about-text { color:rgba(255,255,255,0.55); font-size:1rem; line-height:1.9; margin-bottom:24px; }
+        .about-values { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:30px; }
+        .value-card { background:rgba(255,255,255,0.03); border:1px solid var(--glass-border); border-radius:10px; padding:20px; }
+        .value-icon { font-size:1.8rem; margin-bottom:8px; }
+        .value-title { font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:2px; margin-bottom:4px; }
+        .value-desc { font-size:0.8rem; color:rgba(255,255,255,0.35); letter-spacing:1px; }
+        /* .about-right {} */
+        .team-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+        .team-card { background:linear-gradient(145deg,#0d1b2e,#060e1a); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:24px; text-align:center; transition:all 0.3s; }
+        .team-card:hover { border-color:rgba(255,111,145,0.25); transform:translateY(-4px); }
+        .team-avatar { width:70px; height:70px; border-radius:50%; background:linear-gradient(135deg,var(--pink),var(--violet)); display:flex; align-items:center; justify-content:center; font-size:2rem; margin:0 auto 14px; }
+        .team-name { font-family:'Bebas Neue',sans-serif; font-size:1.2rem; letter-spacing:2px; margin-bottom:4px; }
+        .team-role { font-size:0.75rem; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.35); }
+        .milestones { margin-top:40px; }
+        .milestone { display:flex; gap:16px; margin-bottom:20px; align-items:flex-start; }
+        .milestone-year { font-family:'Bebas Neue',sans-serif; font-size:1.3rem; color:var(--pink); letter-spacing:2px; min-width:60px; }
+        .milestone-text { color:rgba(255,255,255,0.5); font-size:0.9rem; line-height:1.6; }
+
+        /* ===== CONTACT SECTION ===== */
+        #contact-section { background:linear-gradient(180deg,#020810,#050d1a); }
+        .contact-inner { padding:40px 60px 80px; display:grid; grid-template-columns:1fr 1fr; gap:60px; }
+        /* .contact-info {} */
+        .contact-info-item { display:flex; gap:16px; align-items:flex-start; margin-bottom:28px; }
+        .contact-icon { width:48px; height:48px; border-radius:10px; background:rgba(255,111,145,0.1); border:1px solid rgba(255,111,145,0.2); display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0; }
+        .contact-info-label { font-size:0.75rem; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-bottom:4px; }
+        .contact-info-val { color:rgba(255,255,255,0.8); font-size:1rem; letter-spacing:1px; }
+        .contact-form-card { background:linear-gradient(145deg,#0d1b2e,#060e1a); border:1px solid rgba(255,255,255,0.07); border-radius:16px; padding:36px; }
+        .contact-form-title { font-family:'Bebas Neue',sans-serif; font-size:1.8rem; letter-spacing:2px; margin-bottom:24px; }
+        .cf-group { margin-bottom:18px; }
+        .cf-group label { display:block; font-size:0.75rem; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:8px; }
+        .cf-group input, .cf-group textarea, .cf-group select {
+            width:100%; padding:12px 16px;
+            background:rgba(255,255,255,0.04); border:1px solid var(--glass-border);
+            border-radius:8px; color:#fff; font-family:'Rajdhani',sans-serif; font-size:0.95rem;
+            outline:none; transition:border-color 0.3s; resize:vertical;
+        }
+        .cf-group select option { background:#0d1b2e; }
+        .cf-group input:focus, .cf-group textarea:focus, .cf-group select:focus { border-color:rgba(255,111,145,0.4); }
+        .cf-submit { width:100%; padding:14px; background:linear-gradient(135deg,var(--pink),var(--violet)); border:none; border-radius:8px; color:#fff; font-family:'Bebas Neue',sans-serif; font-size:1.3rem; letter-spacing:3px; cursor:pointer; transition:all 0.3s; margin-top:8px; }
+        .cf-submit:hover { box-shadow:0 0 25px rgba(255,111,145,0.5); transform:translateY(-2px); }
+
+        /* ===== LAYOUTS CARDS SECTION ===== */
+        .layouts-section { padding:100px 60px; background:linear-gradient(180deg,#020810,#050d1a); }
+        .cards-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:24px; }
+        .flip-card { height:340px; perspective:1000px; cursor:pointer; }
+        .flip-card-inner { position:relative; width:100%; height:100%; text-align:center; transition:transform 0.9s cubic-bezier(0.4,0.2,0.2,1); transform-style:preserve-3d; }
+        .flip-card:hover .flip-card-inner { transform:rotateY(180deg); }
+        .flip-card-front,.flip-card-back { position:absolute; width:100%; height:100%; backface-visibility:hidden; border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px; border:1px solid rgba(255,255,255,0.06); overflow:hidden; }
+        .flip-card-front::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px); background-size:30px 30px; }
+        .card-1-front{background:linear-gradient(135deg,#1a0820,#300a50);}
+        .card-2-front{background:linear-gradient(135deg,#1a0a08,#3d1500);}
+        .card-3-front{background:linear-gradient(135deg,#080a1a,#10194a);}
+        .card-4-front{background:linear-gradient(135deg,#1a1208,#3d2a00);}
+        .card-icon { font-size:3rem; margin-bottom:16px; filter:drop-shadow(0 0 15px rgba(255,111,145,0.5)); }
+        .flip-card-front h2 { font-family:'Bebas Neue',sans-serif; font-size:1.8rem; letter-spacing:3px; margin-bottom:8px; }
+        .flip-card-front p { font-size:0.85rem; letter-spacing:2px; color:rgba(255,255,255,0.5); text-transform:uppercase; }
+        .card-glow { position:absolute; width:150px; height:150px; border-radius:50%; filter:blur(50px); opacity:0.3; bottom:-30px; right:-30px; }
+        .glow-1{background:var(--violet);} .glow-2{background:var(--peach);} .glow-3{background:#4040ff;} .glow-4{background:var(--gold);}
+        .flip-card-back { background:linear-gradient(145deg,#0d1b2e,#050d1a); transform:rotateY(180deg); border-color:rgba(255,111,145,0.2); gap:12px; }
+        .flip-card-back h2 { font-family:'Bebas Neue',sans-serif; font-size:1.6rem; letter-spacing:3px; margin-bottom:8px; background:linear-gradient(90deg,var(--pink),var(--gold)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .flip-card-back p { color:rgba(255,255,255,0.6); line-height:1.7; font-size:0.95rem; }
+        .card-detail-btn {
+            display:inline-flex; align-items:center; gap:6px; padding:8px 20px;
+            border:1px solid rgba(255,111,145,0.4); border-radius:100px;
+            color:var(--pink); font-family:'Rajdhani',sans-serif; font-weight:700;
+            font-size:0.8rem; letter-spacing:2px; text-transform:uppercase;
+            cursor:pointer; background:transparent; transition:all 0.3s; margin-top:8px;
+        }
+        .card-detail-btn:hover { background:rgba(255,111,145,0.1); border-color:var(--pink); }
+
+        /* ===== FOOTER ===== */
+        footer { background:#020810; border-top:1px solid var(--glass-border); padding:60px 60px 40px; position:relative; }
+        .footer-grid { display:grid; grid-template-columns:1.5fr 1fr 1fr 1fr; gap:40px; margin-bottom:50px; }
+        .footer-brand .brand-name { font-size:2rem; margin-bottom:8px; display:block; }
+        .footer-brand p { color:rgba(255,255,255,0.4); font-size:0.9rem; line-height:1.7; margin-bottom:24px; }
+        .social-row { display:flex; gap:10px; }
+        .social-btn { width:40px; height:40px; border-radius:50%; border:1px solid var(--glass-border); background:var(--glass); display:flex; align-items:center; justify-content:center; transition:all 0.3s; text-decoration:none; }
+        .social-btn:hover { border-color:var(--pink); background:rgba(255,111,145,0.1); transform:translateY(-3px); box-shadow:0 6px 15px rgba(255,111,145,0.2); }
+        .social-btn img { width:18px; height:18px; filter:brightness(0.7); }
+        .social-btn:hover img { filter:brightness(1); }
+        .footer-col h4 { font-family:'Bebas Neue',sans-serif; letter-spacing:3px; font-size:1.1rem; color:rgba(255,255,255,0.7); margin-bottom:20px; }
+        .footer-col a { display:block; color:rgba(255,255,255,0.4); text-decoration:none; font-size:0.9rem; margin-bottom:10px; transition:color 0.3s; letter-spacing:1px; }
+        .footer-col a:hover { color:var(--pink); }
+        .footer-bottom { border-top:1px solid var(--glass-border); padding-top:24px; display:flex; justify-content:space-between; align-items:center; }
+        .footer-copyright { color:rgba(255,255,255,0.3); font-size:0.85rem; letter-spacing:1px; }
+        .footer-legal { display:flex; gap:24px; }
+        .footer-legal a { color:rgba(255,255,255,0.3); text-decoration:none; font-size:0.8rem; letter-spacing:1px; transition:color 0.3s; }
+        .footer-legal a:hover { color:var(--pink); }
+
+        /* ===== CHATBOT ===== */
+        .chatbot-fab {
+            position:fixed; bottom:30px; right:30px; width:58px; height:58px;
+            border-radius:50%; background:linear-gradient(135deg,var(--pink),var(--violet));
+            border:none; cursor:pointer; display:flex; align-items:center; justify-content:center;
+            z-index:3000; box-shadow:0 4px 20px rgba(255,111,145,0.4); transition:all 0.3s;
+            animation:fabPulse 3s ease-in-out infinite;
+        }
+        @keyframes fabPulse { 0%,100%{box-shadow:0 4px 20px rgba(255,111,145,0.4);} 50%{box-shadow:0 4px 30px rgba(255,111,145,0.7),0 0 0 8px rgba(255,111,145,0.1);} }
+        .chatbot-fab:hover { transform:scale(1.1); box-shadow:0 6px 30px rgba(255,111,145,0.6); }
+        .chatbot-fab img { width:28px; height:28px; filter:brightness(2); }
+        .chatbot-window {
+            display:none; position:fixed; bottom:102px; right:30px;
+            width:370px; height:500px;
+            background:linear-gradient(145deg,#0a1520,#050d1a);
+            border:1px solid rgba(255,111,145,0.2); border-radius:20px;
+            z-index:3000; flex-direction:column; overflow:hidden;
+            box-shadow:0 20px 60px rgba(0,0,0,0.6),0 0 40px rgba(255,111,145,0.1);
+            animation:slideInChat 0.3s ease;
+        }
+        .chatbot-window.open { display:flex; }
+        @keyframes slideInChat { 0%{opacity:0;transform:translateY(20px) scale(0.95);} 100%{opacity:1;transform:translateY(0) scale(1);} }
+        .chatbot-header { background:linear-gradient(135deg,rgba(255,111,145,0.15),rgba(138,43,226,0.15)); border-bottom:1px solid rgba(255,111,145,0.15); padding:16px 20px; display:flex; align-items:center; gap:12px; }
+        .chatbot-avatar { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--pink),var(--violet)); display:flex; align-items:center; justify-content:center; font-size:1rem; }
+        .chatbot-header-info h3 { font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1rem; letter-spacing:2px; }
+        .chatbot-header-info span { font-size:0.75rem; color:#4ade80; letter-spacing:1px; }
+        .chatbot-close { margin-left:auto; width:30px; height:30px; border-radius:50%; border:1px solid var(--glass-border); background:var(--glass); color:rgba(255,255,255,0.6); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.9rem; transition:all 0.3s; }
+        .chatbot-close:hover { background:rgba(255,111,145,0.2); color:var(--pink); border-color:var(--pink); }
+        .chatbot-messages { flex:1; padding:20px; overflow-y:auto; display:flex; flex-direction:column; gap:14px; }
+        .chatbot-messages::-webkit-scrollbar { width:4px; }
+        .chatbot-messages::-webkit-scrollbar-thumb { background:rgba(255,111,145,0.3); border-radius:2px; }
+        .msg { display:flex; gap:10px; max-width:88%; animation:msgIn 0.3s ease; }
+        @keyframes msgIn { 0%{opacity:0;transform:translateY(8px);} 100%{opacity:1;transform:translateY(0);} }
+        .msg.bot { align-self:flex-start; }
+        .msg.user { align-self:flex-end; flex-direction:row-reverse; }
+        .msg-bubble { padding:10px 14px; border-radius:14px; font-size:0.9rem; line-height:1.5; }
+        .msg.bot .msg-bubble { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); color:rgba(255,255,255,0.85); border-radius:4px 14px 14px 14px; }
+        .msg.user .msg-bubble { background:linear-gradient(135deg,var(--pink),var(--violet)); color:#fff; border-radius:14px 4px 14px 14px; }
+        .msg-avatar { width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,var(--pink),var(--violet)); display:flex; align-items:center; justify-content:center; font-size:0.8rem; flex-shrink:0; margin-top:2px; }
+        .typing-indicator { display:flex; gap:4px; align-items:center; padding:10px 14px; }
+        .typing-dot { width:6px; height:6px; border-radius:50%; background:rgba(255,111,145,0.6); animation:typingBounce 1.2s ease-in-out infinite; }
+        .typing-dot:nth-child(2){animation-delay:.2s;} .typing-dot:nth-child(3){animation-delay:.4s;}
+        @keyframes typingBounce { 0%,80%,100%{transform:translateY(0);} 40%{transform:translateY(-6px);} }
+        .chatbot-quick-replies { display:flex; flex-wrap:wrap; gap:8px; padding:0 20px 12px; }
+        .quick-reply { padding:5px 12px; border:1px solid rgba(255,111,145,0.3); border-radius:100px; font-size:0.75rem; color:var(--pink); cursor:pointer; background:transparent; font-family:'Rajdhani',sans-serif; letter-spacing:1px; transition:all 0.3s; }
+        .quick-reply:hover { background:rgba(255,111,145,0.1); border-color:var(--pink); }
+        .chatbot-input-row { display:flex; gap:10px; padding:14px 20px; border-top:1px solid rgba(255,255,255,0.06); background:rgba(0,0,0,0.2); }
+        .chatbot-input-row input { flex:1; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:24px; padding:10px 16px; color:#fff; font-family:'Rajdhani',sans-serif; font-size:0.9rem; outline:none; transition:border-color 0.3s; }
+        .chatbot-input-row input:focus { border-color:rgba(255,111,145,0.4); }
+        .chatbot-input-row input::placeholder { color:rgba(255,255,255,0.25); }
+        .chatbot-send { width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,var(--pink),var(--violet)); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:1rem; transition:all 0.3s; flex-shrink:0; }
+        .chatbot-send:hover { transform:scale(1.1); box-shadow:0 4px 15px rgba(255,111,145,0.4); }
+        .fab-badge { position:absolute; top:-4px; right:-4px; width:18px; height:18px; background:#ff4444; border-radius:50%; font-size:0.65rem; display:flex; align-items:center; justify-content:center; font-weight:bold; border:2px solid var(--darker); }
+
+        @media(max-width:900px) {
+            nav { display:none; }
+            .footer-grid { grid-template-columns:1fr 1fr; }
+            .stats-bar { gap:30px; flex-wrap:wrap; }
+            .about-inner, .contact-inner { grid-template-columns:1fr; }
+            .projects-grid { padding:0 20px 60px; }
+            .services-grid { padding:0 20px 60px; }
+            .layouts-section { padding:60px 20px; }
+            .section-header { padding:40px 20px 10px; }
+        }
+        @media(max-width:600px) {
+            header { padding:0 20px; }
+            .chatbot-window { width:calc(100vw - 20px); right:10px; }
+            .footer-grid { grid-template-columns:1fr; }
+            .project-modal-specs { grid-template-columns:1fr 1fr; }
+            .about-inner, .contact-inner { padding:20px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+    <div class="header-logo" onclick="showSection('home')">
+        <div class="logo-icon">R</div>
+        <div>
+            <div class="brand-name">Riselium</div>
+            <div class="brand-sub">Constructions</div>
+        </div>
+    </div>
+    <nav>
+        <a onclick="showSection('home')" id="nav-home" class="active">Home</a>
+        <a onclick="showSection('projects')" id="nav-projects">Projects</a>
+        <a onclick="showSection('services')" id="nav-services">Services</a>
+        <a onclick="showSection('about')" id="nav-about">About</a>
+        <a onclick="showSection('contact')" id="nav-contact">Contact</a>
+    </nav>
+    <div class="header-actions">
+        <button class="btn-outline" onclick="openModal('login-modal')">Log In</button>
+        <button class="btn-solid" onclick="openModal('signup-modal')">Sign Up</button>
+    </div>
+</header>
+
+<!-- ===== LOGIN MODAL ===== -->
+<div class="modal-overlay" id="login-modal">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('login-modal')">✕</button>
+        <div class="modal-title">Welcome Back</div>
+        <div class="modal-subtitle">Sign in to your Riselium account</div>
+        <div class="form-group"><label>Email Address</label><input type="email" placeholder="you@riselium.com" id="login-email"></div>
+        <div class="form-group"><label>Password</label><input type="password" placeholder="••••••••" id="login-pass"></div>
+        <button class="form-submit" onclick="handleLogin()">Enter Portal</button>
+        <div class="modal-switch">Don't have an account? <a onclick="switchModal('login-modal','signup-modal')">Sign Up</a></div>
+    </div>
+</div>
+
+<!-- ===== SIGNUP MODAL ===== -->
+<div class="modal-overlay" id="signup-modal">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('signup-modal')">✕</button>
+        <div class="modal-title">Join Riselium</div>
+        <div class="modal-subtitle">Create your account to get started</div>
+        <div class="form-group"><label>Full Name</label><input type="text" placeholder="Your Name" id="signup-name"></div>
+        <div class="form-group"><label>Email Address</label><input type="email" placeholder="you@riselium.com" id="signup-email"></div>
+        <div class="form-group"><label>Password</label><input type="password" placeholder="Create a strong password" id="signup-pass"></div>
+        <button class="form-submit" onclick="handleSignup()">Create Account</button>
+        <div class="modal-switch">Already have an account? <a onclick="switchModal('signup-modal','login-modal')">Log In</a></div>
+    </div>
+</div>
+
+<!-- ===== PROJECT DETAIL MODAL ===== -->
+<div class="project-modal-overlay" id="project-modal-overlay">
+    <div class="project-modal" id="project-modal">
+        <button class="project-modal-close" onclick="closeProjectModal()">✕</button>
+        <div class="project-modal-hero" id="pm-hero">
+            <div class="no-img" id="pm-hero-icon">🏗️</div>
+            <img id="pm-hero-img" src="" alt="" style="display:none;">
+        </div>
+        <div class="project-modal-body">
+            <div class="project-modal-tag" id="pm-tag"></div>
+            <div class="project-modal-title" id="pm-title"></div>
+            <div class="project-modal-desc" id="pm-desc"></div>
+            <div class="project-modal-specs" id="pm-specs"></div>
+
+            <!-- Image Gallery -->
+            <div class="project-gallery">
+                <div class="project-gallery-title">📸 Project Gallery</div>
+                <div class="gallery-grid" id="pm-gallery"></div>
+                <!-- Upload Area -->
+                <div class="upload-area" id="upload-area" onclick="document.getElementById('file-upload').click()">
+                    <div class="upload-icon">📁</div>
+                    <div class="upload-title">Drop Images Here</div>
+                    <div class="upload-sub">Supports JPG, PNG, GIF, WEBP</div>
+                    <button class="upload-btn" onclick="event.stopPropagation();document.getElementById('file-upload').click()">Choose Files</button>
+                    <input type="file" id="file-upload" multiple accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+                </div>
+            </div>
+
+            <!-- Notes / Text data -->
+            <div style="margin-bottom:16px;">
+                <div class="project-gallery-title">📝 Project Notes & Data</div>
+                <textarea class="project-notes-area" id="project-notes" placeholder="Add project notes, specifications, client requirements, materials list, or any other project data here..."></textarea>
+                <div style="display:flex;align-items:center;">
+                    <button class="save-notes-btn" onclick="saveNotes()">Save Notes</button>
+                    <span class="save-success" id="save-success">✓ Saved!</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== HOME SECTION ===== -->
+<div id="home-section" class="page-section active">
+    <section class="hero">
+        <div class="hero-3d-scene" id="hero-scene">
+            <div class="grid-floor"></div>
+            <!-- Digital Twin Buildings -->
+            <div class="building-scene" id="building-scene">
+                <div class="building-block b1"><div class="win-lights" id="wl1"></div></div>
+                <div class="building-block b2"><div class="win-lights" id="wl2"></div></div>
+                <div class="building-block b3"><div class="win-lights" id="wl3"></div></div>
+                <div class="building-block b4"><div class="win-lights" id="wl4"></div></div>
+                <div class="building-block b5"><div class="win-lights" id="wl5"></div></div>
+                <div class="building-block b6"><div class="win-lights" id="wl6"></div></div>
+                <div class="building-block b7"><div class="win-lights" id="wl7"></div></div>
+                <div class="building-block b8"><div class="win-lights" id="wl8"></div></div>
+                <div class="building-block b9"><div class="win-lights" id="wl9"></div></div>
+            </div>
+            <!-- Crane -->
+            <div class="crane" id="crane-el">
+                <div class="crane-arm"><div class="crane-cable"><div class="crane-load"></div></div></div>
+                <div class="crane-tower"></div>
+            </div>
+            <!-- HUD Overlays -->
+            <div class="hud-line" style="left:12%;top:30%;width:90px;height:50px;"></div>
+            <div class="hud-dot" style="left:calc(12% + 90px);top:30%;"></div>
+            <div class="hud-label" style="left:calc(12% + 100px);top:28%;">STRUCT-A · 24F</div>
+            <div class="hud-line" style="right:18%;top:22%;width:80px;height:40px;"></div>
+            <div class="hud-dot" style="right:18%;top:22%;"></div>
+            <div class="hud-label" style="right:calc(18% + 85px);top:20%;">BLOCK-B · 32F</div>
+            <div class="hud-line" style="left:38%;bottom:28%;width:70px;height:35px;"></div>
+            <div class="hud-dot" style="left:38%;bottom:28%;"></div>
+            <div class="hud-label" style="left:calc(38% + 75px);bottom:27%;">CORE · ACTIVE</div>
+            <!-- Scan line -->
+            <div class="scan-line"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-tag">★ Premium Construction & Design</div>
+            <h1 class="hero-title">
+                <div class="line1">Building Tomorrow's</div>
+                <div class="line2">Dream Spaces Today</div>
+            </h1>
+            <p class="hero-desc">End-to-end construction solutions crafted with precision, passion & innovation</p>
+            <div class="hero-ctas">
+                <button class="cta-primary" onclick="showSection('projects')">Explore Projects</button>
+                <button class="cta-secondary" onclick="showSection('contact')">Get a Quote</button>
+            </div>
+        </div>
+        <div class="stats-bar">
+            <div class="stat-item"><div class="stat-num">100+</div><div class="stat-label">Projects Delivered</div></div>
+            <div class="stat-item"><div class="stat-num">18+</div><div class="stat-label">Years of Excellence</div></div>
+            <div class="stat-item"><div class="stat-num">99%</div><div class="stat-label">Client Satisfaction</div></div>
+            <div class="stat-item"><div class="stat-num">40+</div><div class="stat-label">Expert Architects</div></div>
+        </div>
+    </section>
+
+    <!-- Layouts Cards -->
+    <section class="layouts-section">
+        <div class="section-label">Our Portfolio</div>
+        <div class="section-title">Architectural Blueprints</div>
+        <div class="cards-grid">
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front card-1-front">
+                        <div class="card-icon">🏠</div>
+                        <h2>Layout 1</h2>
+                        <p>Residential Plan</p>
+                        <div class="card-glow glow-1"></div>
+                    </div>
+                    <div class="flip-card-back">
+                        <h2>Residential</h2>
+                        <p>Modern 3BHK layout with open living space, private garden area, and smart home integration throughout.</p>
+                        <button class="card-detail-btn" onclick="openProjectModal('residential')">View Details →</button>
+                    </div>
+                </div>
+            </div>
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front card-2-front">
+                        <div class="card-icon">🏢</div>
+                        <h2>Layout 2</h2>
+                        <p>Commercial Plan</p>
+                        <div class="card-glow glow-2"></div>
+                    </div>
+                    <div class="flip-card-back">
+                        <h2>Commercial</h2>
+                        <p>Cutting-edge office design featuring collaborative zones, executive suites, and ergonomic workspaces.</p>
+                        <button class="card-detail-btn" onclick="openProjectModal('commercial')">View Details →</button>
+                    </div>
+                </div>
+            </div>
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front card-3-front">
+                        <div class="card-icon">🏭</div>
+                        <h2>Layout 3</h2>
+                        <p>Industrial Plan</p>
+                        <div class="card-glow glow-3"></div>
+                    </div>
+                    <div class="flip-card-back">
+                        <h2>Industrial</h2>
+                        <p>Optimized factory floor layout with streamlined workflow, robust storage systems and safety compliance.</p>
+                        <button class="card-detail-btn" onclick="openProjectModal('industrial')">View Details →</button>
+                    </div>
+                </div>
+            </div>
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front card-4-front">
+                        <div class="card-icon">🌿</div>
+                        <h2>Layout 4</h2>
+                        <p>Landscape Plan</p>
+                        <div class="card-glow glow-4"></div>
+                    </div>
+                    <div class="flip-card-back">
+                        <h2>Landscape</h2>
+                        <p>Lush garden and outdoor spaces with eco-friendly materials, water features, and sustainable design.</p>
+                        <button class="card-detail-btn" onclick="openProjectModal('landscape')">View Details →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer inside home -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <span class="brand-name">Riselium</span>
+                <p>Building dreams from the ground up. We deliver premium construction and design services with uncompromising quality and innovation.</p>
+                <div class="social-row">
+                    <a class="social-btn" href="https://www.youtube.com" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="YouTube"></a>
+                    <a class="social-btn" href="https://www.instagram.com" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384063.png" alt="Instagram"></a>
+                    <a class="social-btn" href="https://www.facebook.com" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384053.png" alt="Facebook"></a>
+                    <a class="social-btn" href="https://www.linkedin.com" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384072.png" alt="LinkedIn"></a>
+                    <a class="social-btn" href="https://twitter.com" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/5968/5968958.png" alt="X Twitter"></a>
+                </div>
+            </div>
+            <div class="footer-col"><h4>Services</h4><a href="#" onclick="showSection('services');return false;">Residential Construction</a><a href="#" onclick="showSection('services');return false;">Commercial Projects</a><a href="#" onclick="showSection('services');return false;">Interior Design</a><a href="#" onclick="showSection('services');return false;">Landscape Planning</a><a href="#" onclick="showSection('services');return false;">Renovations</a></div>
+            <div class="footer-col"><h4>Company</h4><a href="#" onclick="showSection('about');return false;">About Us</a><a href="#" onclick="showSection('about');return false;">Our Team</a><a href="#" onclick="showSection('projects');return false;">Portfolio</a><a href="#">Careers</a><a href="#">Press & Media</a></div>
+            <div class="footer-col"><h4>Contact</h4><a href="tel:+1234567890">📞 +1 234 567 890</a><a href="mailto:info@riselium.com">✉️ info@riselium.com</a><a href="#">📍 123 Dream Street</a><a href="#">City, State 12345</a></div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-copyright">© 2025 Riselium Constructions. All Rights Reserved.</div>
+            <div class="footer-legal"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Cookie Policy</a></div>
+        </div>
+    </footer>
+</div>
+
+<!-- ===== PROJECTS SECTION ===== -->
+<div id="projects-section" class="page-section">
+    <div id="projects-section" class="inner-section">
+        <div class="section-header">
+            <div class="section-label">Our Work</div>
+            <div class="section-title">Featured Projects</div>
+            <div class="section-desc">Explore our portfolio of delivered excellence — from luxury residences to industrial facilities.</div>
+        </div>
+        <div class="projects-grid">
+            <!-- Card 1 -->
+            <div class="project-card" onclick="openProjectModal('residential')">
+                <div class="project-card-img">
+                    <div class="placeholder-icon">🏠</div>
+                    <div class="project-badge badge-res">Residential</div>
+                </div>
+                <div class="project-card-body">
+                    <div class="project-card-title">Skyline Residences</div>
+                    <div class="project-card-desc">Premium 3BHK apartments with panoramic views, smart home systems, and eco-friendly design.</div>
+                    <div class="project-card-meta">
+                        <div class="project-meta-item">Area: <span>4,200 sq.ft</span></div>
+                        <div class="project-meta-item">Year: <span>2024</span></div>
+                    </div>
+                    <button class="project-view-btn">View Details →</button>
+                </div>
+            </div>
+            <!-- Card 2 -->
+            <div class="project-card" onclick="openProjectModal('commercial')">
+                <div class="project-card-img">
+                    <div class="placeholder-icon">🏢</div>
+                    <div class="project-badge badge-com">Commercial</div>
+                </div>
+                <div class="project-card-body">
+                    <div class="project-card-title">Nexus Tower</div>
+                    <div class="project-card-desc">A 32-floor commercial tower with collaborative work zones, conference facilities, and retail spaces.</div>
+                    <div class="project-card-meta">
+                        <div class="project-meta-item">Area: <span>120,000 sq.ft</span></div>
+                        <div class="project-meta-item">Year: <span>2023</span></div>
+                    </div>
+                    <button class="project-view-btn">View Details →</button>
+                </div>
+            </div>
+            <!-- Card 3 -->
+            <div class="project-card" onclick="openProjectModal('industrial')">
+                <div class="project-card-img">
+                    <div class="placeholder-icon">🏭</div>
+                    <div class="project-badge badge-ind">Industrial</div>
+                </div>
+                <div class="project-card-body">
+                    <div class="project-card-title">TechPark Manufacturing Hub</div>
+                    <div class="project-card-desc">State-of-the-art production facility with optimized workflow, clean rooms, and solar integration.</div>
+                    <div class="project-card-meta">
+                        <div class="project-meta-item">Area: <span>85,000 sq.ft</span></div>
+                        <div class="project-meta-item">Year: <span>2023</span></div>
+                    </div>
+                    <button class="project-view-btn">View Details →</button>
+                </div>
+            </div>
+            <!-- Card 4 -->
+            <div class="project-card" onclick="openProjectModal('landscape')">
+                <div class="project-card-img">
+                    <div class="placeholder-icon">🌿</div>
+                    <div class="project-badge badge-land">Landscape</div>
+                </div>
+                <div class="project-card-body">
+                    <div class="project-card-title">Verdant Gardens</div>
+                    <div class="project-card-desc">Eco-conscious landscaping with native flora, water recycling systems, and biophilic design.</div>
+                    <div class="project-card-meta">
+                        <div class="project-meta-item">Area: <span>12,000 sq.ft</span></div>
+                        <div class="project-meta-item">Year: <span>2024</span></div>
+                    </div>
+                    <button class="project-view-btn">View Details →</button>
+                </div>
+            </div>
+            <!-- Card 5 -->
+            <div class="project-card" onclick="openProjectModal('residential')">
+                <div class="project-card-img">
+                    <div class="placeholder-icon">🏡</div>
+                    <div class="project-badge badge-res">Residential</div>
+                </div>
+                <div class="project-card-body">
+                    <div class="project-card-title">Heritage Villa Renovation</div>
+                    <div class="project-card-desc">Sensitive restoration of a 1930s colonial bungalow blending heritage aesthetics with modern amenities.</div>
+                    <div class="project-card-meta">
+                        <div class="project-meta-item">Area: <span>6,800 sq.ft</span></div>
+                        <div class="project-meta-item">Year: <span>2022</span></div>
+                    </div>
+                    <button class="project-view-btn">View Details →</button>
+                </div>
+            </div>
+            <!-- Card 6 -->
+            <div class="project-card" onclick="openProjectModal('commercial')">
+                <div class="project-card-img">
+                    <div class="placeholder-icon">🛍️</div>
+                    <div class="project-badge badge-com">Commercial</div>
+                </div>
+                <div class="project-card-body">
+                    <div class="project-card-title">Prism Mall</div>
+                    <div class="project-card-desc">A next-gen retail and entertainment complex with sky terraces, digital signage, and food courts.</div>
+                    <div class="project-card-meta">
+                        <div class="project-meta-item">Area: <span>200,000 sq.ft</span></div>
+                        <div class="project-meta-item">Year: <span>2022</span></div>
+                    </div>
+                    <button class="project-view-btn">View Details →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SERVICES SECTION ===== -->
+<div id="services-section" class="page-section">
+    <div class="inner-section">
+        <div class="section-header">
+            <div class="section-label">What We Offer</div>
+            <div class="section-title">Our Services</div>
+            <div class="section-desc">Comprehensive construction solutions tailored to your vision — from concept to completion.</div>
+        </div>
+        <div class="services-grid">
+            <div class="service-card">
+                <span class="service-icon">🏠</span>
+                <div class="service-title">Residential Construction</div>
+                <div class="service-desc">Custom homes, apartments, and luxury residences designed around your lifestyle and built to last generations.</div>
+                <ul class="service-features">
+                    <li>Architect-led design process</li>
+                    <li>Smart home integration</li>
+                    <li>Eco-friendly materials</li>
+                    <li>15-year structural warranty</li>
+                    <li>Interior finish packages</li>
+                </ul>
+                <div class="service-price">Starting ₹45L / $55K</div>
+            </div>
+            <div class="service-card">
+                <span class="service-icon">🏢</span>
+                <div class="service-title">Commercial Projects</div>
+                <div class="service-desc">Office towers, retail complexes, and mixed-use developments that elevate your brand and maximise ROI.</div>
+                <ul class="service-features">
+                    <li>Space planning & zoning</li>
+                    <li>LEED certification support</li>
+                    <li>MEP engineering</li>
+                    <li>Facade engineering</li>
+                    <li>Post-handover maintenance</li>
+                </ul>
+                <div class="service-price">Starting ₹2Cr / $250K</div>
+            </div>
+            <div class="service-card">
+                <span class="service-icon">🏭</span>
+                <div class="service-title">Industrial Facilities</div>
+                <div class="service-desc">Purpose-built factories, warehouses, and processing plants with optimised flow and safety-first design.</div>
+                <ul class="service-features">
+                    <li>Workflow simulation</li>
+                    <li>High-load floor systems</li>
+                    <li>Fire & safety compliance</li>
+                    <li>Utility & power planning</li>
+                    <li>Clean-room construction</li>
+                </ul>
+                <div class="service-price">Starting ₹80L / $100K</div>
+            </div>
+            <div class="service-card">
+                <span class="service-icon">🌿</span>
+                <div class="service-title">Landscape Design</div>
+                <div class="service-desc">From rooftop gardens to public parks — creating living, breathing spaces that restore and inspire.</div>
+                <ul class="service-features">
+                    <li>Native plant landscaping</li>
+                    <li>Rainwater harvesting</li>
+                    <li>Irrigation systems</li>
+                    <li>Hardscaping & pathways</li>
+                    <li>Seasonal maintenance plans</li>
+                </ul>
+                <div class="service-price">Starting ₹8L / $10K</div>
+            </div>
+            <div class="service-card">
+                <span class="service-icon">🔧</span>
+                <div class="service-title">Renovations & Retrofits</div>
+                <div class="service-desc">Breathing new life into existing structures — structural reinforcement, aesthetic upgrades, and energy retrofits.</div>
+                <ul class="service-features">
+                    <li>Structural assessment</li>
+                    <li>Energy efficiency upgrades</li>
+                    <li>Heritage restoration</li>
+                    <li>Accessibility modifications</li>
+                    <li>Modular refitting</li>
+                </ul>
+                <div class="service-price">Starting ₹12L / $15K</div>
+            </div>
+            <div class="service-card">
+                <span class="service-icon">🖥️</span>
+                <div class="service-title">Digital Twin & BIM</div>
+                <div class="service-desc">End-to-end digital modelling using BIM and Digital Twin technology for precision planning and real-time monitoring.</div>
+                <ul class="service-features">
+                    <li>3D BIM modelling</li>
+                    <li>Real-time progress tracking</li>
+                    <li>Clash detection</li>
+                    <li>Virtual walkthroughs</li>
+                    <li>Lifecycle data management</li>
+                </ul>
+                <div class="service-price">Starting ₹5L / $6K</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== ABOUT SECTION ===== -->
+<div id="about-section" class="page-section">
+    <div class="inner-section">
+        <div class="section-header">
+            <div class="section-label">Our Story</div>
+            <div class="section-title">About Riselium</div>
+        </div>
+        <div class="about-inner">
+            <div class="about-left">
+                <p class="about-text">Founded in 2007, Riselium Constructions began with a single vision: to build spaces where people genuinely want to live, work, and grow. From a small team of 5 architects and engineers, we've grown into a 200+ strong organization delivering landmark projects across India and the Middle East.</p>
+                <p class="about-text">We believe construction is not merely a technical exercise — it is the art of translating dreams into tangible reality. Every brick we lay, every beam we raise carries with it our commitment to quality, sustainability, and the communities we build for.</p>
+                <p class="about-text">Our approach combines rigorous engineering discipline with creative architectural thinking, supported by cutting-edge digital tools including BIM and Digital Twin technology that keep our projects on time and on budget.</p>
+                <div class="about-values">
+                    <div class="value-card"><div class="value-icon">🎯</div><div class="value-title">Precision</div><div class="value-desc">Zero compromise on quality standards</div></div>
+                    <div class="value-card"><div class="value-icon">🌱</div><div class="value-title">Sustainability</div><div class="value-desc">Green-first building philosophy</div></div>
+                    <div class="value-card"><div class="value-icon">🤝</div><div class="value-title">Integrity</div><div class="value-desc">Transparent client relationships</div></div>
+                    <div class="value-card"><div class="value-icon">💡</div><div class="value-title">Innovation</div><div class="value-desc">Tech-driven construction methods</div></div>
+                </div>
+            </div>
+            <div class="about-right">
+                <div class="section-label" style="margin-bottom:20px;">Leadership Team</div> 
+                <div class="team-grid">
+                    <div class="team-card"><div class="team-avatar">👨‍💼</div><div class="team-name">Rama Krishna Reddy</div><div class="team-role">Founder & CEO</div></div>
+                    <div class="team-card"><div class="team-avatar">👷‍♂️</div><div class="team-name">K S N Reddy</div><div class="team-role">Chief Architect</div></div>
+                    <div class="team-card"><div class="team-avatar">👨‍🔬</div><div class="team-name">RAM Reddy</div><div class="team-role">Head of Engineering</div></div>
+                    <div class="team-card"><div class="team-avatar">👩‍💻</div><div class="team-name">Nagarjuna Reddy</div><div class="team-role">Digital Twin Lead</div></div>
+                </div>
+                <div class="milestones" style="margin-top:36px;">
+                    <div class="section-label" style="margin-bottom:20px;">Our Journey</div>
+                    <div class="milestone"><div class="milestone-year">2007</div><div class="milestone-text">Founded in Hyderabad with first residential project — a 12-unit apartment complex.</div></div>
+                    <div class="milestone"><div class="milestone-year">2012</div><div class="milestone-text">Expanded into commercial construction; completed first 20-floor office tower.</div></div>
+                    <div class="milestone"><div class="milestone-year">2017</div><div class="milestone-text">Launched Digital Twin & BIM division; became first Indian firm to deliver full BIM Level 3 project.</div></div>
+                    <div class="milestone"><div class="milestone-year">2021</div><div class="milestone-text">Expanded to UAE & Saudi Arabia. Crossed 400 completed projects milestone.</div></div>
+                    <div class="milestone"><div class="milestone-year">2025</div><div class="milestone-text">100+ projects, ₹1200 Cr revenue, and a commitment to net-zero construction by 2030.</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== CONTACT SECTION ===== -->
+<div id="contact-section" class="page-section">
+    <div class="inner-section">
+        <div class="section-header">
+            <div class="section-label">Get In Touch</div>
+            <div class="section-title">Contact Us</div>
+            <div class="section-desc">Have a project in mind? We'd love to hear about it. Reach out and our team will get back to you within 24 hours.</div>
+        </div>
+        <div class="contact-inner">
+            <div class="contact-info">
+                <div class="contact-info-item"><div class="contact-icon">📞</div><div><div class="contact-info-label">Phone</div><div class="contact-info-val">+1 234 567 890</div></div></div>
+                <div class="contact-info-item"><div class="contact-icon">✉️</div><div><div class="contact-info-label">Email</div><div class="contact-info-val">info@riselium.com</div></div></div>
+                <div class="contact-info-item"><div class="contact-icon">📍</div><div><div class="contact-info-label">Office</div><div class="contact-info-val">123 Dream Street, Hyderabad, Telangana 500001</div></div></div>
+                <div class="contact-info-item"><div class="contact-icon">🕐</div><div><div class="contact-info-label">Working Hours</div><div class="contact-info-val">Mon–Sat: 9:00 AM – 7:00 PM IST</div></div></div>
+                <div style="margin-top:32px;padding:24px;background:rgba(255,111,145,0.05);border:1px solid rgba(255,111,145,0.15);border-radius:12px;">
+                    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;margin-bottom:8px;">Quick Response</div>
+                    <p style="color:rgba(255,255,255,0.45);font-size:0.9rem;line-height:1.7;">Use our chatbot (bottom right) for instant answers. Our AI assistant can help you get quotes, check project status, and schedule site visits 24/7.</p>
+                </div>
+            </div>
+            <div class="contact-form-card">
+                <div class="contact-form-title">Send a Message</div>
+                <div class="cf-group"><label>Full Name</label><input type="text" placeholder="Your Name" id="cf-name"></div>
+                <div class="cf-group"><label>Email</label><input type="email" placeholder="you@company.com" id="cf-email"></div>
+                <div class="cf-group"><label>Phone</label><input type="tel" placeholder="+91 98765 43210" id="cf-phone"></div>
+                <div class="cf-group">
+                    <label>Project Type</label>
+                    <select id="cf-type">
+                        <option value="">Select project type</option>
+                        <option>Residential Construction</option>
+                        <option>Commercial Project</option>
+                        <option>Industrial Facility</option>
+                        <option>Landscape Design</option>
+                        <option>Renovation</option>
+                        <option>Digital Twin / BIM</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="cf-group"><label>Message</label><textarea rows="4" placeholder="Tell us about your project, budget range, and timeline..." id="cf-message"></textarea></div>
+                <button class="cf-submit" onclick="handleContact()">Send Message</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== CHATBOT ===== -->
+<button class="chatbot-fab" id="chatbot-fab" onclick="toggleChat()">
+    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712027.png" alt="Chat">
+    <div class="fab-badge" id="fab-badge">1</div>
+</button>
+<div class="chatbot-window" id="chatbot-window">
+    <div class="chatbot-header">
+        <div class="chatbot-avatar">🤖</div>
+        <div class="chatbot-header-info"><h3>RISELIUM AI</h3><span>● Online — Ready to help</span></div>
+        <button class="chatbot-close" onclick="toggleChat()">✕</button>
+    </div>
+    <div class="chatbot-messages" id="chatbot-messages">
+        <div class="msg bot"><div class="msg-avatar">🤖</div><div class="msg-bubble">Hello! Welcome to Riselium Constructions. I'm your AI assistant. How can I help you today?</div></div>
+    </div>
+    <div class="chatbot-quick-replies" id="quick-replies">
+        <button class="quick-reply" onclick="sendQuick('Get a quote')">💰 Get a quote</button>
+        <button class="quick-reply" onclick="sendQuick('View projects')">🏗️ View projects</button>
+        <button class="quick-reply" onclick="sendQuick('Contact us')">📞 Contact us</button>
+        <button class="quick-reply" onclick="sendQuick('Services offered')">🔧 Services</button>
+    </div>
+    <div class="chatbot-input-row">
+        <input type="text" id="chat-input" placeholder="Ask me anything..." onkeypress="handleKey(event)">
+        <button class="chatbot-send" onclick="sendMessage()">➤</button>
+    </div>
+</div>
+
+<script>
+/* ===== PARTICLES ===== */
+const scene = document.getElementById('hero-scene');
+for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `left:${Math.random()*100}%;width:${Math.random()*4+1}px;height:${Math.random()*4+1}px;background:${Math.random()>.5?'#ff6f91':'#8a2be2'};animation-duration:${Math.random()*7+4}s;animation-delay:${Math.random()*6}s;`;
+    scene.appendChild(p);
+}
+
+/* ===== RANDOM WINDOW LIGHTS ===== */
+for (let b = 1; b <= 9; b++) {
+    const container = document.getElementById('wl'+b);
+    if (!container) continue;
+    const parent = container.parentElement;
+    const h = parseInt(parent.style.height || parent.className.match(/b\d/)?.[0]?.replace('b','') || 200);
+    const count = Math.floor(Math.random() * 8) + 4;
+    for (let w = 0; w < count; w++) {
+        const light = document.createElement('div');
+        light.className = 'win-light';
+        light.style.cssText = `left:${8+Math.random()*70}%;top:${5+Math.random()*80}%;--dur:${2+Math.random()*4}s;--del:${Math.random()*3}s;`;
+        container.appendChild(light);
+    }
+}
+
+/* ===== SECTION NAVIGATION ===== */
+const sections = ['home','projects','services','about','contact'];
+function showSection(name) {
+    sections.forEach(s => {
+        const sec = document.getElementById(s+'-section');
+        const navLink = document.getElementById('nav-'+s);
+        if (sec) sec.classList.toggle('active', s === name);
+        if (navLink) navLink.classList.toggle('active', s === name);
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ===== AUTH MODALS ===== */
+function openModal(id) { document.getElementById(id).classList.add('active'); document.body.style.overflow = 'hidden'; }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); document.body.style.overflow = ''; }
+function switchModal(a, b) { closeModal(a); setTimeout(() => openModal(b), 150); }
+document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if (e.target===o) closeModal(o.id); }));
+
+function handleLogin() {
+    const email = document.getElementById('login-email').value;
+    const pass = document.getElementById('login-pass').value;
+    if (!email || !pass) { alert('Please fill in all fields.'); return; }
+    alert(`✅ Welcome back! Logged in as ${email}`);
+    closeModal('login-modal');
+}
+function handleSignup() {
+    const name = document.getElementById('signup-name').value;
+    const email = document.getElementById('signup-email').value;
+    const pass = document.getElementById('signup-pass').value;
+    if (!name || !email || !pass) { alert('Please fill in all fields.'); return; }
+    if (pass.length < 6) { alert('Password must be at least 6 characters.'); return; }
+    alert(`🎉 Account created! Welcome to Riselium, ${name}!`);
+    closeModal('signup-modal');
+}
+function handleContact() {
+    const name = document.getElementById('cf-name').value;
+    const email = document.getElementById('cf-email').value;
+    if (!name || !email) { alert('Please fill in your name and email.'); return; }
+    alert(`✅ Thank you, ${name}! We've received your message and will contact you within 24 hours.`);
+    ['cf-name','cf-email','cf-phone','cf-type','cf-message'].forEach(id => { document.getElementById(id).value = ''; });
+}
+
+/* ===== PROJECT MODAL DATA ===== */
+const projectData = {
+    residential: {
+        icon: '🏠', title: 'Skyline Residences', tag: 'Residential', tagClass: 'badge-res',
+        desc: 'A premium residential complex featuring modern 3BHK apartments with panoramic city views, integrated smart home systems, EV charging stations, and meticulously landscaped common areas. Built using certified sustainable materials with a GRIHA 4-star rating.',
+        specs: [
+            { label: 'Total Area', val: '4,200 sq.ft' },
+            { label: 'Floors', val: '24 Floors' },
+            { label: 'Units', val: '96 Apts' },
+            { label: 'Timeline', val: '28 Months' },
+            { label: 'Completed', val: '2024' },
+            { label: 'Rating', val: 'GRIHA ★★★★' }
+        ]
+    }, /*title: 'Nexus Tower'*/
+    commercial: {
+        icon: '🏢', title: 'Kandi Heights', tag: 'Commercial', tagClass: 'badge-com',
+        desc: 'A 32-floor Grade-A commercial tower housing Fortune 500 tenants. Features flexible floor plates, a sky lobby on the 16th floor, LEED Platinum certification, and a podium-level retail arcade. Delivered 3 months ahead of schedule.',
+        specs: [
+            { label: 'Total Area', val: '120,000 sq.ft' },
+            { label: 'Floors', val: '32 Floors' },
+            { label: 'Tenants', val: '45 Companies' },
+            { label: 'Timeline', val: '36 Months' },
+            { label: 'Completed', val: '2023' },
+            { label: 'Rating', val: 'LEED Platinum' }
+        ]
+    },
+    industrial: {
+        icon: '🏭', title: 'TechPark Manufacturing Hub', tag: 'Industrial', tagClass: 'badge-ind',
+        desc: 'A purpose-built 85,000 sq.ft manufacturing facility for a leading electronics OEM. Features ISO Class 7 clean rooms, a 10MW solar rooftop, automated material handling systems, and real-time Digital Twin monitoring dashboards.',
+        specs: [
+            { label: 'Total Area', val: '85,000 sq.ft' },
+            { label: 'Clean Rooms', val: 'ISO Class 7' },
+            { label: 'Solar', val: '10 MW' },
+            { label: 'Timeline', val: '22 Months' },
+            { label: 'Completed', val: '2023' },
+            { label: 'Workers', val: '2,000+' }
+        ]
+    },
+    landscape: {
+        icon: '🌿', title: 'Verdant Gardens', tag: 'Landscape', tagClass: 'badge-land',
+        desc: 'A 12,000 sq.ft biophilic landscape project for a premium gated community. Includes a Japanese zen garden, native tree canopy walk, rainwater harvesting pond, therapeutic herb garden, and seasonal floral installations.',
+        specs: [
+            { label: 'Total Area', val: '12,000 sq.ft' },
+            { label: 'Plant Species', val: '85+' },
+            { label: 'Water Saved', val: '60% Reduction' },
+            { label: 'Timeline', val: '8 Months' },
+            { label: 'Completed', val: '2024' },
+            { label: 'Certification', val: 'IGBC Green' }
+        ]
+    }
+};
+
+// Per-project gallery state
+const projectGalleries = { residential:[], commercial:[], industrial:[], landscape:[] };
+const projectNotes = { residential:'', commercial:'', industrial:'', landscape:'' };
+let currentProject = null;
+
+function openProjectModal(type) {
+    currentProject = type;
+    const data = projectData[type];
+    if (!data) return;
+
+    // Set hero
+    document.getElementById('pm-hero-icon').textContent = data.icon;
+    document.getElementById('pm-hero-img').style.display = 'none';
+    document.getElementById('pm-hero-icon').style.display = 'block';
+
+    // Tag
+    const tag = document.getElementById('pm-tag');
+    tag.textContent = data.tag;
+    tag.className = 'project-modal-tag ' + data.tagClass;
+
+    // Title & desc
+    document.getElementById('pm-title').textContent = data.title;
+    document.getElementById('pm-desc').textContent = data.desc;
+
+    // Specs
+    const specsEl = document.getElementById('pm-specs');
+    specsEl.innerHTML = data.specs.map(s => `
+        <div class="spec-card">
+            <div class="spec-card-label">${s.label}</div>
+            <div class="spec-card-val">${s.val}</div>
+        </div>`).join('');
+
+    // Gallery
+    renderGallery(type);
+
+    // Notes
+    document.getElementById('project-notes').value = projectNotes[type] || '';
+
+    document.getElementById('project-modal-overlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function renderGallery(type) {
+    const gallery = document.getElementById('pm-gallery');
+    const images = projectGalleries[type] || [];
+    gallery.innerHTML = images.map((src, i) => `
+        <div class="gallery-thumb" onclick="viewFullImage('${src}')">
+            <img src="${src}" alt="Project image ${i+1}">
+        </div>`).join('');
+    if (images.length === 0) {
+        gallery.innerHTML = '<div style="color:rgba(255,255,255,0.25);font-size:0.85rem;letter-spacing:1px;padding:10px 0;">No images yet — upload below.</div>';
+    }
+}
+
+function viewFullImage(src) {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:zoom-out;';
+    overlay.innerHTML = `<img src="${src}" style="max-width:90vw;max-height:90vh;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,0.8);">`;
+    overlay.onclick = () => overlay.remove();
+    document.body.appendChild(overlay);
+}
+
+function closeProjectModal() {
+    document.getElementById('project-modal-overlay').classList.remove('active');
+    document.body.style.overflow = '';
+    currentProject = null;
+}
+
+document.getElementById('project-modal-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeProjectModal();
+});
+
+/* Drag & Drop */
+const uploadArea = document.getElementById('upload-area');
+uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('drag-over'); });
+uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('drag-over'));
+uploadArea.addEventListener('drop', e => {
+    e.preventDefault();
+    uploadArea.classList.remove('drag-over');
+    handleFiles(e.dataTransfer.files);
+});
+
+function handleImageUpload(e) { handleFiles(e.target.files); }
+
+function handleFiles(files) {
+    if (!currentProject) return;
+    Array.from(files).forEach(file => {
+        if (!file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = ev => {
+            projectGalleries[currentProject].push(ev.target.result);
+            renderGallery(currentProject);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+function saveNotes() {
+    if (!currentProject) return;
+    projectNotes[currentProject] = document.getElementById('project-notes').value;
+    const msg = document.getElementById('save-success');
+    msg.style.opacity = '1';
+    setTimeout(() => { msg.style.opacity = '0'; }, 2000);
+}
+
+/* ===== CHATBOT ===== */
+let chatOpen = false;
+const CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages';
+
+function toggleChat() {
+    chatOpen = !chatOpen;
+    const win = document.getElementById('chatbot-window');
+    const badge = document.getElementById('fab-badge');
+    win.classList.toggle('open', chatOpen);
+    if (chatOpen) badge.style.display = 'none';
+}
+function handleKey(e) { if (e.key === 'Enter') sendMessage(); }
+function sendQuick(text) { document.getElementById('chat-input').value = text; sendMessage(); }
+
+function addMsg(role, text) {
+    const msgs = document.getElementById('chatbot-messages');
+    const div = document.createElement('div');
+    div.className = `msg ${role}`;
+    div.innerHTML = role === 'bot'
+        ? `<div class="msg-avatar">🤖</div><div class="msg-bubble">${text.replace(/\n/g,'<br>')}</div>`
+        : `<div class="msg-bubble">${text}</div>`;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showTyping() {
+    const msgs = document.getElementById('chatbot-messages');
+    const div = document.createElement('div');
+    div.className = 'msg bot'; div.id = 'typing-indicator';
+    div.innerHTML = `<div class="msg-avatar">🤖</div><div class="msg-bubble typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+}
+function removeTyping() { const el = document.getElementById('typing-indicator'); if (el) el.remove(); }
+
+const conversationHistory = [];
+
+async function sendMessage() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    addMsg('user', text);
+    document.getElementById('quick-replies').style.display = 'none';
+    showTyping();
+    conversationHistory.push({ role: 'user', content: text });
+
+    try {
+        const response = await fetch(CLAUDE_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                model: 'claude-sonnet-4-20250514',
+                max_tokens: 1000,
+                system: `You are an AI assistant for Riselium Constructions — a premium construction and design company based in Hyderabad, India.
+Be helpful, professional, and concise. Help customers with:
+- Inquiries about services: Residential (from ₹45L), Commercial (from ₹2Cr), Industrial (from ₹80L), Landscape (from ₹8L), Renovations (from ₹12L), Digital Twin/BIM (from ₹5L)
+- Getting quotes (ask for project type, location, size, budget range, timeline)
+- Portfolio: 100+ projects, 18+ years, 99% satisfaction
+- Scheduling consultations or site visits
+- General construction, architecture, BIM questions
+- Contact: Phone: +1 234 567 890, Email: info@riselium.com, Address: 123 Dream Street, Hyderabad, Telangana
+- Hours: Mon-Sat 9AM-7PM IST
+Keep responses brief and warm. Use line breaks for clarity. Use emojis occasionally.`,
+                messages: conversationHistory
+            })
+        });
+        const data = await response.json();
+        removeTyping();
+        const reply = data.content?.[0]?.text || "I couldn't process that. Please call us at +1 234 567 890.";
+        addMsg('bot', reply);
+        conversationHistory.push({ role: 'assistant', content: reply });
+    } catch (err) {
+        removeTyping();
+        const fallbacks = {
+            'quote': "I'd love to help you get a quote! 🏗️\n\nPlease share:\n1. Project type (residential/commercial/industrial)\n2. Location & size\n3. Budget range\n4. Timeline\n\nOr call us: +1 234 567 890",
+            'service': "We offer: 🏠 Residential · 🏢 Commercial · 🏭 Industrial · 🌿 Landscape · 🔧 Renovations · 🖥️ Digital Twin/BIM\n\nWhich service interests you?",
+            'contact': "📞 +1 234 567 890\n✉️ info@riselium.com\n📍 123 Dream Street, Hyderabad\n🕐 Mon–Sat, 9AM–7PM",
+            'project': "We've delivered 100+ projects! 🏗️ Check our Projects section to browse by type — residential, commercial, industrial & landscape."
+        };
+        const lower = text.toLowerCase();
+        let reply = "Thanks for reaching out! 😊 I'm here to help with quotes, services, and project queries. What would you like to know?";
+        for (const [k, v] of Object.entries(fallbacks)) { if (lower.includes(k)) { reply = v; break; } }
+        addMsg('bot', reply);
+        conversationHistory.push({ role: 'assistant', content: reply });
+    }
+}
+</script>
+</body>
+</html>
